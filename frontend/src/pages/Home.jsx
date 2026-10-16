@@ -137,7 +137,7 @@ const Home = () => {
               </div>
 
               <div className="mt-[30px]">
-                <h2 className="text-[26px] leading-9 text-headingColor font-[700] text-center">Find a Doctor</h2>
+                <h2 className="text-[26px] leading-9 text-headingColor font-[700] text-center">Find a Location</h2>
                 <p className="text-[16px] leading-7 text-textColor font-[400] mt-4 text-center">
                   World-class care for everyone. Our health System offers unmatched, expert health care. 
                   From the lab to the clinic
