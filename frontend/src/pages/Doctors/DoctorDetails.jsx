@@ -135,9 +135,9 @@ const DoctorDetails = () => {
                       </h3>
 
                       <p className="mt-2 text-textColor">
-                        {slot.startingTime || "Start time not specified"}
-                        {" — "}
-                        {slot.endingTime || "End time not specified"}
+                        {formatTime(slot.startingTime)}
+{" — "}
+{formatTime(slot.endingTime)}
                       </p>
                     </div>
                   ))}
