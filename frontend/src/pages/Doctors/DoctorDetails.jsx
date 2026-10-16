@@ -7,6 +7,35 @@ import { authContext } from "../../context/AuthContext";
 import DoctorsAbout from "./DoctorsAbout";
 import Loader from "../../components/Loader/Loading";
 
+// Convert 24-hour time to 12-hour time with AM/PM.
+// Examples: 09:00 -> 9:00 AM, 14:30 -> 2:30 PM
+const formatTime = (time) => {
+  if (!time) return "Not specified";
+
+  const value = String(time).trim();
+
+  // Already contains AM/PM; preserve it.
+  if (/\b(AM|PM)\b/i.test(value)) {
+    return value;
+  }
+
+  const match = value.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+
+  if (!match) return value;
+
+  let hours = Number(match[1]);
+  const minutes = match[2];
+
+  if (hours > 23 || Number(minutes) > 59) {
+    return value;
+  }
+
+  const period = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+
+  return `${hours}:${minutes} ${period}`;
+};
+
 const DoctorDetails = () => {
   const { id } = useParams();
   const { user, role } = useContext(authContext);
@@ -19,7 +48,9 @@ const DoctorDetails = () => {
 
   const book = async () => {
     if (!user) {
-      return toast.info("Please login as a patient to book an appointment");
+      return toast.info(
+        "Please login as a patient to book an appointment"
+      );
     }
 
     if (role !== "patient") {
@@ -40,7 +71,9 @@ const DoctorDetails = () => {
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.message || "Could not start checkout");
+        throw new Error(
+          result.message || "Could not start checkout"
+        );
       }
 
       window.location.href = result.session.url;
@@ -59,7 +92,6 @@ const DoctorDetails = () => {
     );
   }
 
-  // Safely handle missing or invalid time-slot data.
   const timeSlots = Array.isArray(doctor.timeSlots)
     ? doctor.timeSlots.filter(
         (slot) =>
@@ -97,13 +129,15 @@ const DoctorDetails = () => {
             </div>
           </div>
 
-          {/* Doctor information */}
+          {/* Doctor details */}
           <div className="lg:col-span-2">
             <span className="bg-[#CCF0F3] px-4 py-2 rounded">
               {doctor.specialization || "Doctor"}
             </span>
 
-            <h1 className="text-3xl font-bold mt-4">{doctor.name}</h1>
+            <h1 className="text-3xl font-bold mt-4">
+              {doctor.name}
+            </h1>
 
             <p className="mt-3 text-textColor">
               Rating: {doctor.averageRating || 0} (
@@ -117,7 +151,7 @@ const DoctorDetails = () => {
               experiences={doctor.experiences}
             />
 
-            {/* Available time slots */}
+            {/* Available time slots with AM/PM */}
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">
                 Available Time Slots
@@ -136,8 +170,8 @@ const DoctorDetails = () => {
 
                       <p className="mt-2 text-textColor">
                         {formatTime(slot.startingTime)}
-{" — "}
-{formatTime(slot.endingTime)}
+                        {" — "}
+                        {formatTime(slot.endingTime)}
                       </p>
                     </div>
                   ))}
@@ -152,7 +186,9 @@ const DoctorDetails = () => {
             {/* Patient reviews */}
             {doctor.reviews?.length > 0 && (
               <div className="mt-8">
-                <h3 className="text-xl font-bold mb-4">Reviews</h3>
+                <h3 className="text-xl font-bold mb-4">
+                  Reviews
+                </h3>
 
                 <div className="space-y-4">
                   {doctor.reviews.map((review, index) => (
@@ -166,7 +202,9 @@ const DoctorDetails = () => {
                         {review.rating}/5
                       </span>
 
-                      <p className="mt-2">{review.reviewText}</p>
+                      <p className="mt-2">
+                        {review.reviewText}
+                      </p>
                     </div>
                   ))}
                 </div>
